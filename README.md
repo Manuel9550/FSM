@@ -21,7 +21,15 @@ If the input is not acceptable (is empty, contains characters not in the FSM alp
 The 'Mod3' finite state machine is given as an example.
 **Go to the pkg\fsm\fsm_test.go file to see the mod3 finites state machine example** 
 
-The example is given as a test file: Initial states, alphabet, and transitions are set up, and then used to create a config for the Finite State Machine. The tests simulate what the Mod3 FSM would reutrn, given the test input. 
+The example is given as a test file: Initial states, alphabet, and transitions are set up, and then used to create a config for the Finite State Machine. The tests simulate what the Mod3 FSM would return, given the test input.
+
+In order to checkout and run the tests:
+- Clone the repository: 'git clone https://github.com/Manuel9550/FSM.git'
+- 'cd' to where you've checked out the repo
+- At the head of the repo, run 'go mod download'
+- 'cd .\pkg\fsm\'
+- run 'go test'
+
 
 
 
