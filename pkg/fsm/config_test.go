@@ -304,6 +304,36 @@ func TestInValidConfig(t *testing.T) {
 			finalStates:   []string{"q1"},
 			expectedError: "invalid transition for q0:c:q0 - invalid input",
 		},
+		{
+			name:     "invalid - no final states present",
+			states:   []string{"q0", "q1"},
+			alphabet: []rune{'a', 'b'},
+			transitions: []Transition{
+				{
+					State:       "q0",
+					Input:       'a',
+					ResultState: "q1",
+				},
+				{
+					State:       "q0",
+					Input:       'b',
+					ResultState: "q0",
+				},
+				{
+					State:       "q1",
+					Input:       'a',
+					ResultState: "q0",
+				},
+				{
+					State:       "q1",
+					Input:       'b',
+					ResultState: "q1",
+				},
+			},
+			initialState:  "q0",
+			finalStates:   []string{},
+			expectedError: "must have some final states",
+		},
 	}
 
 	for _, currentTest := range tests {

@@ -56,6 +56,7 @@ func (f *FiniteStateMachine) Process(input string) (*string, bool) {
 	}
 
 	// final check: did we end up in a correct state?
+	// in this implementation, ending up in a final state not specified in the config will return an invalid result
 	if _, ok := f.finalStates[currentState]; !ok {
 		return nil, false
 	}

@@ -62,6 +62,9 @@ func (t *TransitionsMap) NewTransition(transition Transition) error {
 	return nil
 }
 
+// Note: In this implementation, the transition map will be invalid if
+// there is a state that doesn't have an input set for a possible alphabet character.
+// Ex: If S1 is a State, and 'A' and 'B' are both valid inputs, but there is no (S1, 'B') mapping, it's marked as Invalid
 func (t *TransitionsMap) Validate() error {
 	for state := range t.states {
 		inputMap, ok := t.transitions[state]

@@ -14,6 +14,7 @@ type Config struct {
 }
 
 func NewConfig(states []string, alphabet []rune, initialState string, finalStates []string, transitions []Transition) (*Config, error) {
+	// Sanity checks: avoid empy input
 	if len(states) == 0 {
 		return nil, fmt.Errorf("must have non-zero amount of states")
 	}
@@ -26,12 +27,16 @@ func NewConfig(states []string, alphabet []rune, initialState string, finalState
 	if len(transitions) == 0 {
 		return nil, fmt.Errorf("must have transition functions")
 	}
+	if len(finalStates) == 0 {
+		return nil, fmt.Errorf("must have some final states")
+	}
 
 	newConfig := Config{
 		initialState: &initialState,
 		finalStates:  finalStates,
 	}
 
+	// Create the States, ALphabet, and TransitionMap, and then validate the config
 	newConfig.States = make(map[string]struct{}, len(states))
 	for _, currentState := range states {
 		if strings.TrimSpace(currentState) == "" {
