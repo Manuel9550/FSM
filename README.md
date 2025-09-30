@@ -25,10 +25,10 @@ The example is given as a test file: Initial states, alphabet, and transitions a
 
 In order to checkout and run the tests:
 - Clone the repository: 'git clone https://github.com/Manuel9550/FSM.git'
-- 'cd' to where you've checked out the repo
+- Change directory to where you've checked out the repo
 - At the head of the repo, run 'go mod download'
-- 'cd .\pkg\fsm\'
-- run 'go test'
+- Change directory to .\pkg\fsm\ in the repo
+- Run 'go test'
 
 
 
