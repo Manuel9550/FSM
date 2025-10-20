@@ -6,51 +6,56 @@ import (
 )
 
 type Config struct {
-	States       map[string]struct{}
-	initialState *string
-	finalStates  []string
-	Alphabet     map[rune]struct{}
+	initialState string
+	finalStates  map[string]struct{}
 	Transitions  TransitionsMap
 }
 
 func NewConfig(states []string, alphabet []rune, initialState string, finalStates []string, transitions []Transition) (*Config, error) {
 	// Sanity checks: avoid empy input
 	if len(states) == 0 {
-		return nil, fmt.Errorf("must have non-zero amount of states")
+		return nil, ErrEmptyStates
 	}
 	if len(alphabet) == 0 {
-		return nil, fmt.Errorf("must have non-zero amount of inputs")
+		return nil, ErrEmptyAlphabet
 	}
 	if initialState == "" {
-		return nil, fmt.Errorf("must have non-blank initial state")
+		return nil, ErrEmptyInitialState
 	}
 	if len(transitions) == 0 {
-		return nil, fmt.Errorf("must have transition functions")
+		return nil, ErrEmptyTransitions
 	}
 	if len(finalStates) == 0 {
-		return nil, fmt.Errorf("must have some final states")
+		return nil, ErrEmptyFinalStates
 	}
 
 	newConfig := Config{
-		initialState: &initialState,
-		finalStates:  finalStates,
+		initialState: initialState,
 	}
 
-	// Create the States, ALphabet, and TransitionMap, and then validate the config
-	newConfig.States = make(map[string]struct{}, len(states))
+	// Create the States, Alphabet, and TransitionMap, and then validate the config
+	newStates := make(map[string]struct{}, len(states))
 	for _, currentState := range states {
 		if strings.TrimSpace(currentState) == "" {
 			return nil, ErrEmptyState
 		}
-		newConfig.States[currentState] = struct{}{}
+		newStates[currentState] = struct{}{}
 	}
 
-	newConfig.Alphabet = make(map[rune]struct{}, len(alphabet))
+	newConfig.finalStates = make(map[string]struct{}, len(finalStates))
+	for _, currentState := range finalStates {
+		if strings.TrimSpace(currentState) == "" {
+			return nil, ErrEmptyState
+		}
+		newConfig.finalStates[currentState] = struct{}{}
+	}
+
+	newAlphabet := make(map[rune]struct{}, len(alphabet))
 	for _, currentCharacter := range alphabet {
-		newConfig.Alphabet[currentCharacter] = struct{}{}
+		newAlphabet[currentCharacter] = struct{}{}
 	}
 
-	newConfig.Transitions = NewTransitionsMap(newConfig.States, newConfig.Alphabet)
+	newConfig.Transitions = NewTransitionsMap(newStates, newAlphabet)
 	for _, transition := range transitions {
 		transitionError := newConfig.Transitions.NewTransition(transition)
 		if transitionError != nil {
@@ -67,12 +72,12 @@ func NewConfig(states []string, alphabet []rune, initialState string, finalState
 }
 
 func (c *Config) Validate() error {
-	if _, ok := c.States[*c.initialState]; !ok {
+	if _, ok := c.Transitions.states[c.initialState]; !ok {
 		return fmt.Errorf("initial state invalid")
 	}
 
-	for _, finalState := range c.finalStates {
-		if _, ok := c.States[finalState]; !ok {
+	for finalState := range c.finalStates {
+		if _, ok := c.Transitions.states[finalState]; !ok {
 			return fmt.Errorf("%s final state is invalid", finalState)
 		}
 	}

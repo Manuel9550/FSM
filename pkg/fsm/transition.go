@@ -1,17 +1,7 @@
 package fsm
 
 import (
-	"errors"
 	"fmt"
-)
-
-var (
-	ErrInvalidState       = errors.New("invalid state")
-	ErrInvalidInput       = errors.New("invalid input")
-	ErrInvalidResultState = errors.New("invalid result state")
-	ErrEmptyState         = errors.New("state cannot be empty")
-	ErrEmptyResultState   = errors.New("result state cannot be empty")
-	ErrNilTransition      = errors.New("transition cannot be nil")
 )
 
 type Transition struct {

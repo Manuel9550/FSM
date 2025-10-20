@@ -1,11 +1,7 @@
 package fsm
 
 type FiniteStateMachine struct {
-	states       map[string]struct{}
-	initialState string
-	alphabet     map[rune]struct{}
-	transitions  TransitionsMap
-	finalStates  map[string]struct{}
+	Config Config
 }
 
 func New(config Config) (*FiniteStateMachine, error) {
@@ -15,15 +11,7 @@ func New(config Config) (*FiniteStateMachine, error) {
 	}
 
 	newFSM := FiniteStateMachine{
-		states:       config.States,
-		initialState: *config.initialState,
-		alphabet:     config.Alphabet,
-		transitions:  config.Transitions,
-	}
-
-	newFSM.finalStates = make(map[string]struct{}, len(config.finalStates))
-	for _, currentFinalState := range config.finalStates {
-		newFSM.finalStates[currentFinalState] = struct{}{}
+		Config: config,
 	}
 
 	return &newFSM, nil
@@ -33,16 +21,16 @@ func (f *FiniteStateMachine) Process(input string) (*string, bool) {
 	if len(input) == 0 {
 		return nil, false
 	}
-	currentState := f.initialState
+	currentState := f.Config.initialState
 
 	for _, currentRune := range input {
-		_, ok := f.alphabet[currentRune]
+		_, ok := f.Config.Transitions.alphabet[currentRune]
 		if !ok {
 			return nil, false
 		}
 
 		// Accepted input, get the current transition for this state
-		inputMap, ok := f.transitions.transitions[currentState]
+		inputMap, ok := f.Config.Transitions.transitions[currentState]
 		if !ok {
 			return nil, false
 		}
@@ -57,7 +45,7 @@ func (f *FiniteStateMachine) Process(input string) (*string, bool) {
 
 	// final check: did we end up in a correct state?
 	// in this implementation, ending up in a final state not specified in the config will return an invalid result
-	if _, ok := f.finalStates[currentState]; !ok {
+	if _, ok := f.Config.finalStates[currentState]; !ok {
 		return nil, false
 	}
 
